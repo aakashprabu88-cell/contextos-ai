@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: contextos-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: contextos-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: UPLOAD_DIR
+        value: /tmp/uploads
+      - key: OPENAI_API_KEY
+        sync: false
+
+  - type: database
+    name: contextos-db
+    runtime: postgres
+    plan: free
+    databaseName: contextos_ai
+    user: contextos
