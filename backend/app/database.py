@@ -5,12 +5,21 @@ from app.config import get_settings
 
 settings = get_settings()
 
+
+def _build_database_url(url: str) -> str:
+    if url.startswith("postgresql://"):
+        return url.replace("postgresql://", "postgresql+asyncpg://", 1)
+    return url
+
+
+db_url = _build_database_url(settings.database_url)
+
 connect_args = {}
-if settings.database_url.startswith("sqlite"):
+if db_url.startswith("sqlite"):
     connect_args = {"check_same_thread": False}
 
 engine = create_async_engine(
-    settings.database_url,
+    db_url,
     echo=settings.DEBUG,
     connect_args=connect_args,
 )
