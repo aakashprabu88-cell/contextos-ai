@@ -1,5 +1,4 @@
 from pydantic import BaseModel, EmailStr, Field
-from uuid import UUID
 from datetime import datetime
 from typing import Optional
 
@@ -16,7 +15,7 @@ class UserLogin(BaseModel):
 
 
 class UserResponse(BaseModel):
-    id: UUID
+    id: str
     email: str
     name: str
     avatar_url: Optional[str] = None

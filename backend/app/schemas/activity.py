@@ -1,15 +1,14 @@
-from pydantic import BaseModel
-from uuid import UUID
+from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional, Any
 
 
 class ActivityResponse(BaseModel):
-    id: UUID
+    id: str
     activity_type: str
     title: str
     description: Optional[str] = None
-    extra_data: Optional[Any] = None
+    metadata: Optional[Any] = Field(None, validation_alias="extra_data")
     created_at: datetime
 
     model_config = {"from_attributes": True}

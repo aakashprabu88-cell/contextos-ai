@@ -1,5 +1,4 @@
 from pydantic import BaseModel, Field
-from uuid import UUID
 from datetime import datetime
 from typing import Optional, Any
 from enum import Enum
@@ -30,7 +29,7 @@ class TaskCreate(BaseModel):
 
 
 class TaskResponse(BaseModel):
-    id: UUID
+    id: str
     title: str
     description: Optional[str] = None
     task_type: TaskTypeEnum

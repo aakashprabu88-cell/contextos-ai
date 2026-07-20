@@ -34,7 +34,9 @@ class Settings(BaseSettings):
         if self.JWT_SECRET:
             return self.JWT_SECRET
         import secrets
-        return secrets.token_urlsafe(32)
+        if not hasattr(self, "_generated_jwt_secret"):
+            self._generated_jwt_secret = secrets.token_urlsafe(32)
+        return self._generated_jwt_secret
 
     @property
     def cors_origins_list(self) -> list[str]:

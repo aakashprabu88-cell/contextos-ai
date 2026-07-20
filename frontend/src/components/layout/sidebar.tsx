@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import {
   LayoutDashboard, MessageSquare, Search, ListTodo, FileText,
-  Settings, LogOut, Bot, ChevronLeft, ChevronRight,
+  StickyNote, Settings, LogOut, Bot, ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -15,6 +15,7 @@ const navItems = [
   { href: "/chat", label: "AI Chat", icon: MessageSquare },
   { href: "/search", label: "Search", icon: Search },
   { href: "/tasks", label: "Tasks", icon: ListTodo },
+  { href: "/notes", label: "Notes", icon: StickyNote },
   { href: "/documents", label: "Documents", icon: FileText },
   { href: "/settings", label: "Settings", icon: Settings },
 ];

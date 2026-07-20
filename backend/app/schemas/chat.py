@@ -1,5 +1,4 @@
 from pydantic import BaseModel, Field
-from uuid import UUID
 from datetime import datetime
 from typing import Optional, Any
 
@@ -9,7 +8,7 @@ class ChatSessionCreate(BaseModel):
 
 
 class ChatSessionResponse(BaseModel):
-    id: UUID
+    id: str
     title: str
     created_at: datetime
     updated_at: datetime
@@ -22,10 +21,10 @@ class ChatMessageCreate(BaseModel):
 
 
 class ChatMessageResponse(BaseModel):
-    id: UUID
+    id: str
     role: str
     content: str
-    extra_data: Optional[Any] = None
+    metadata: Optional[Any] = Field(None, validation_alias="extra_data")
     created_at: datetime
 
     model_config = {"from_attributes": True}

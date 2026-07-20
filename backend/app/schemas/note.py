@@ -1,5 +1,4 @@
 from pydantic import BaseModel, Field
-from uuid import UUID
 from datetime import datetime
 from typing import Optional
 
@@ -17,7 +16,7 @@ class NoteUpdate(BaseModel):
 
 
 class NoteResponse(BaseModel):
-    id: UUID
+    id: str
     title: str
     content: str
     tags: list[str]
