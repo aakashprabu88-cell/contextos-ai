@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useApi } from "@/hooks/useApi";
+import { useToast } from "@/components/ui/toast";
 import { useState, useEffect } from "react";
 import {
   ListTodo, Plus, Play, Trash2, CheckCircle, XCircle,
@@ -17,6 +18,7 @@ import type { Task, AgentResult } from "@/types";
 
 export default function TasksPage() {
   const api = useApi();
+  const { toast } = useToast();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
@@ -36,6 +38,7 @@ export default function TasksPage() {
       setTasks(res.tasks);
     } catch (e) {
       console.error("Failed to load tasks:", e);
+      toast("Failed to load tasks", "error");
     } finally {
       setLoading(false);
     }
@@ -54,8 +57,10 @@ export default function TasksPage() {
       setNewTitle("");
       setNewQuery("");
       setShowCreate(false);
+      toast("Task created successfully", "success");
     } catch (e) {
       console.error("Failed to create task:", e);
+      toast(`Failed to create task: ${e instanceof Error ? e.message : "Unknown error"}`, "error");
     } finally {
       setCreating(false);
     }
@@ -69,8 +74,10 @@ export default function TasksPage() {
     try {
       const result = (await api.executeTask(taskId)) as Task;
       setTasks((prev) => prev.map((t) => (t.id === taskId ? result : t)));
+      toast("Task executed successfully", "success");
     } catch (e) {
       console.error("Failed to execute task:", e);
+      toast(`Execution failed: ${e instanceof Error ? e.message : "Unknown error"}`, "error");
       setTasks((prev) =>
         prev.map((t) =>
           t.id === taskId ? { ...t, status: "failed" as const } : t
@@ -85,8 +92,10 @@ export default function TasksPage() {
     try {
       await api.deleteTask(taskId);
       setTasks((prev) => prev.filter((t) => t.id !== taskId));
+      toast("Task deleted", "success");
     } catch (e) {
       console.error("Failed to delete task:", e);
+      toast("Failed to delete task", "error");
     }
   };
 

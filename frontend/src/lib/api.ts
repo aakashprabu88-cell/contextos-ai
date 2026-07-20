@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
+const API_URL = "";
 
 interface RequestOptions extends RequestInit {
   token?: string;
@@ -133,6 +133,10 @@ class ApiClient {
 
   async deleteNote(token: string, noteId: string) {
     return this.request(`/api/notes/${noteId}`, { method: "DELETE", token });
+  }
+
+  async updateNote(token: string, noteId: string, data: { title?: string; content?: string; tags?: string[] }) {
+    return this.request(`/api/notes/${noteId}`, { method: "PUT", token, body: JSON.stringify(data) });
   }
 
   // Documents

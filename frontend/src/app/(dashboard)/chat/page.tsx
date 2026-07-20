@@ -5,12 +5,14 @@ import { ChatMessage } from "@/components/chat/chat-message";
 import { ChatInput } from "@/components/chat/chat-input";
 import { SuggestedPrompts } from "@/components/chat/suggested-prompts";
 import { useApi } from "@/hooks/useApi";
+import { useToast } from "@/components/ui/toast";
 import { useState, useEffect, useRef } from "react";
 import { Plus, MessageSquare, Trash2 } from "lucide-react";
 import type { ChatSession, ChatMessage as ChatMessageType } from "@/types";
 
 export default function ChatPage() {
   const api = useApi();
+  const { toast } = useToast();
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [activeSession, setActiveSession] = useState<ChatSession | null>(null);
   const [messages, setMessages] = useState<ChatMessageType[]>([]);

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useApi } from "@/hooks/useApi";
+import { useToast } from "@/components/ui/toast";
 import { useState, useEffect } from "react";
 import {
   StickyNote, Plus, Trash2, Loader2, X, Tag,
@@ -16,6 +17,7 @@ import type { Note } from "@/types";
 
 export default function NotesPage() {
   const api = useApi();
+  const { toast } = useToast();
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
@@ -34,6 +36,7 @@ export default function NotesPage() {
       setNotes(res.notes);
     } catch (e) {
       console.error("Failed to load notes:", e);
+      toast("Failed to load notes", "error");
     } finally {
       setLoading(false);
     }
@@ -54,8 +57,10 @@ export default function NotesPage() {
       setNewContent("");
       setNewTags("");
       setShowCreate(false);
+      toast("Note created successfully", "success");
     } catch (e) {
       console.error("Failed to create note:", e);
+      toast(`Failed to create note: ${e instanceof Error ? e.message : "Unknown error"}`, "error");
     } finally {
       setCreating(false);
     }
@@ -65,8 +70,10 @@ export default function NotesPage() {
     try {
       await api.deleteNote(noteId);
       setNotes((prev) => prev.filter((n) => n.id !== noteId));
+      toast("Note deleted", "success");
     } catch (e) {
       console.error("Failed to delete note:", e);
+      toast("Failed to delete note", "error");
     }
   };
 

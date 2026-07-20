@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useApi } from "@/hooks/useApi";
+import { useToast } from "@/components/ui/toast";
 import { useState, useEffect, useRef } from "react";
 import {
   FileText, Upload, Trash2, File, Image, Code, Loader2,
@@ -15,6 +16,7 @@ import type { Document } from "@/types";
 
 export default function DocumentsPage() {
   const api = useApi();
+  const { toast } = useToast();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -30,6 +32,7 @@ export default function DocumentsPage() {
       setDocuments(res.documents);
     } catch (e) {
       console.error("Failed to load documents:", e);
+      toast("Failed to load documents", "error");
     } finally {
       setLoading(false);
     }
@@ -38,13 +41,21 @@ export default function DocumentsPage() {
   const handleUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
     setUploading(true);
+    let successCount = 0;
     try {
       for (const file of Array.from(files)) {
-        const doc = (await api.uploadDocument(file)) as Document;
-        setDocuments((prev) => [doc, ...prev]);
+        try {
+          const doc = (await api.uploadDocument(file)) as Document;
+          setDocuments((prev) => [doc, ...prev]);
+          successCount++;
+        } catch (e) {
+          console.error("Failed to upload:", file.name, e);
+          toast(`Failed to upload ${file.name}: ${e instanceof Error ? e.message : "Unknown error"}`, "error");
+        }
       }
-    } catch (e) {
-      console.error("Failed to upload:", e);
+      if (successCount > 0) {
+        toast(`${successCount} file${successCount > 1 ? "s" : ""} uploaded successfully`, "success");
+      }
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -55,8 +66,10 @@ export default function DocumentsPage() {
     try {
       await api.deleteDocument(docId);
       setDocuments((prev) => prev.filter((d) => d.id !== docId));
+      toast("Document deleted", "success");
     } catch (e) {
       console.error("Failed to delete:", e);
+      toast("Failed to delete document", "error");
     }
   };
 

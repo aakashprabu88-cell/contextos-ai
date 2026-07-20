@@ -22,6 +22,7 @@ export function useApi() {
   const listNotes = useCallback((skip?: number, limit?: number) => authFetch((t) => api.listNotes(t, skip, limit)), [authFetch]);
   const createNote = useCallback((data: Parameters<typeof api.createNote>[1]) => authFetch((t) => api.createNote(t, data)), [authFetch]);
   const deleteNote = useCallback((noteId: string) => authFetch((t) => api.deleteNote(t, noteId)), [authFetch]);
+  const updateNote = useCallback((noteId: string, data: { title?: string; content?: string; tags?: string[] }) => authFetch((t) => api.updateNote(t, noteId, data)), [authFetch]);
   const listDocuments = useCallback(() => authFetch((t) => api.listDocuments(t)), [authFetch]);
   const uploadDocument = useCallback((file: File) => authFetch((t) => api.uploadDocument(t, file)), [authFetch]);
   const deleteDocument = useCallback((docId: string) => authFetch((t) => api.deleteDocument(t, docId)), [authFetch]);
@@ -42,6 +43,7 @@ export function useApi() {
     deleteTask,
     listNotes,
     createNote,
+    updateNote,
     deleteNote,
     listDocuments,
     uploadDocument,
@@ -57,7 +59,7 @@ export function useApi() {
     updateUser,
   }), [
     listTasks, createTask, executeTask, deleteTask,
-    listNotes, createNote, deleteNote,
+    listNotes, createNote, updateNote, deleteNote,
     listDocuments, uploadDocument, deleteDocument,
     search, listChatSessions, createChatSession, getChatSession,
     sendChatMessage, deleteChatSession, executeAgent,
